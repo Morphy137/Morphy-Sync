@@ -1,0 +1,34 @@
+# Operating system files
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Secrets and credentials (never commit these)
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+id_rsa*
+id_ed25519*
+auth.json
+credentials*.json
+*.secret
+
+# Logs, caches and dependencies
+*.log
+logs/
+node_modules/
+__pycache__/
+.cache/
+tmp/
+
+# Editor swap files
+*.swp
+*~
+
+# AgentSync temporary files
+*.agentsync.tmp
