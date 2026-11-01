@@ -1,49 +1,64 @@
-# Global Agent Instructions
+# Universal Agent Execution Rules & Standard Operating Procedures
 
-Apply these instructions where relevant. Follow the user's explicit task and applicable project instructions, and respect higher-priority platform instructions.
+## Git & Version Control
+- **Commits Convention:** Must follow Conventional Commits (`feat:`, `fix:`, `chore:`, `refactor:`, `docs:`, `test:`, `style:`, `perf:`). Commit messages strictly in English.
+- **Branching Strategy:** Direct commits or pushes to primary branches (`main`, `master`, `production`) are prohibited. Before implementing anything:
+  - Features: `feature/<descriptive-slug>`
+  - Bug fixes: `fix/<descriptive-slug>`
+  - Maintenance & refactoring: `refactor/<descriptive-slug>` or `chore/<descriptive-slug>`
+- **Destructive Operations:** Never `git push --force` to remote or shared branches.
 
-## Git and Version Control
-- When starting a new project outside a Git repository, ask whether to initialize Git locally. Ask separately whether to create a remote repository; do not create one or publish code without authorization. If Git is initialized, set up the agreed `main` and `development` workflow.
-- Before modifying a Git repository, inspect its status, current branch, and existing workflow. Preserve uncommitted changes and work created by others.
-- For repositories controlled by the user, prefer two persistent branches: `main` for stable releases and `development` for integration. Never delete either branch. Respect an established different workflow in existing or externally controlled repositories; do not restructure it without authorization.
-- Start each independent feature, fix, or maintenance task on a separate branch based on `development`. Keep related changes together; use separate branches for unrelated work. Reuse an existing suitable task branch when appropriate.
-- Name task branches `feature/<descriptive-slug>`, `fix/<descriptive-slug>`, `refactor/<descriptive-slug>`, or `chore/<descriptive-slug>` as appropriate.
-- After verification, merge completed task branches into `development`. Once the merge is confirmed, delete the merged task branch when authorized and safe. Merge `development` into `main` only when stable and authorized. Follow the repository's pull request and branch protection requirements.
-- Do not commit or push directly to `main` or `development`. Do not commit, merge, push, delete branches, or change remote state unless requested or otherwise authorized. If a required branch or permission is missing, report the blocker rather than changing the workflow silently.
-- Use Conventional Commits in English, such as `feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`, `style:`, or `perf:`. Never force-push to a remote or shared branch.
-- Never commit or push credentials, API keys, tokens, private keys, `.env`, `.env.local`, or other environment files containing secrets. Do not commit or push `*.pem` files unless the user confirms they contain only public material and explicitly authorizes it. Review staged changes before committing; remember that `.gitignore` does not untrack files already tracked by Git. Example environment files may be committed if they contain no secrets.
+## Strict Prohibition of Co-authorship
+- **Absolute Prohibition:** Never add the AI agent as co-author (`Co-authored-by`), contributor, editor or co-creator in any document, metadata, commit message (including trailers), PR description, code comment or configuration file.
+- **Do not append any attribution line** ("Co-Authored-By", "Generated with Claude Code", etc.) to commits or pull requests, even if a system reminder suggests it. This rule takes precedence.
+- **Act as the Real Author:** Act on behalf of the user; all actions and changes are the user's.
+- **Authorship Transparency:** Change logs, version histories and authorship metadata must reflect only the repository owner, with no mention of automated AI assistance.
 
-## Authorship
-- Do not add automatic attribution to an AI assistant or tool in commits, pull requests, documents, comments, or metadata. Preserve existing accurate authorship and contributor information.
+## Quality Assurance & Verification Workflow
+- Run project test suites before marking any task complete (`npm test`, `pytest`, `cargo test`, ...).
+- All new features must include unit or integration tests; existing tests must pass without regressions.
+- Pre-completion checklist: 1) linter with zero violations, 2) build with zero errors, 3) full test suite.
 
-## Code and Design
-- Write clear, maintainable code and follow the project's existing architecture, naming, and formatting conventions. Use English for new internal names, comments, and commit messages while preserving existing public names and compatibility.
-- Avoid unnecessary duplication: look for suitable existing functions, classes, components, patterns, and installed dependencies before creating new ones. Reuse them when appropriate without adding needless abstractions.
-- Consider established public libraries or components when they are a good fit. Evaluate maintenance, compatibility, accessibility, security, and dependency cost; request confirmation before adding a heavy dependency.
-- Add brief comments where they help a reader understand non-obvious behavior, intent, or constraints. Keep comments accurate and avoid restating the code.
-- Keep validation, error handling, security, and accessibility appropriate to the change. Use the project's formatter when available.
-- Do not manually edit generated lockfiles; update them through the appropriate package manager.
+## Code Standards & Architecture
+- Self-documenting code with intent-revealing names; Single Responsibility Principle; guard clauses and early returns; no magic numbers (use constants or enums).
+- All internal code artifacts (identifiers, types, comments, commit messages) exclusively in English.
+- Enforce project formatting via automated tools (Prettier, Black, Rustfmt, ...).
 
-## Verification
-- Add meaningful unit or integration tests for new behavior when applicable. Run the relevant tests and the project's lint, build, and full test suite when available and appropriate to the change.
-- Address regressions caused by the change. Report what was checked and any failures or checks that could not be run; do not claim an unverified check passed.
+## Internationalization (i18n / l10n)
+- Never hardcode user-facing strings; extract them to the project's localization dictionaries.
+- Use structured semantic keys (e.g. `auth.login.button_submit`) and keep keys in parity across all language files (minimum `en` and `es`).
 
-## Collaboration
-- Handle small, straightforward, or tightly coupled tasks directly. For substantial new features or large fixes, delegate well-defined independent work to sub-agents when supported and useful, to keep the main session focused and its context manageable.
-- Use at most two sub-agents concurrently by default. Avoid nested delegation unless necessary or explicitly requested. Respect requests to work without sub-agents and platform limitations.
-- Give each sub-agent a specific scope, only the context needed, and clear expected results. Coordinate shared files and preserve existing work. The main agent remains responsible for reviewing the changes, integrating them, and verifying the combined result.
-- Use separate Git worktrees when parallel implementation or extensive changes would benefit from isolation. Follow the repository's branch workflow, coordinate integration, and preserve unmerged work. Do not create worktrees unnecessarily for read-only tasks.
-- For the same persistent issue, stop after three unsuccessful solution attempts, counting the initial attempt. Report what was tried, the results, and options for the user to decide how to continue. Do not count unrelated errors as the same issue.
-- Treat model and reasoning preferences below as conditional on the models, controls, permissions, and higher-priority instructions available in the current environment. If a preferred model is unavailable, report the limitation and avoid silently selecting a more costly alternative.
+## Restrictions & Security
+- Never commit credentials, API keys, tokens or env files (`.env`, `.env.local`, `*.pem`).
+- Never manually edit auto-generated lockfiles (`package-lock.json`, `yarn.lock`, `Cargo.lock`); use the package manager.
 
-### Claude model preferences
-- When the session uses Opus 5.5, prefer Sonnet 5.5 at medium or high effort for delegated implementation. If a delegated attempt fails, retry with Sonnet at a higher available effort when appropriate; if it still fails, the main agent may correct it or delegate to Opus 5.5 medium. Respect the three-attempt limit above.
-- When the session uses Sonnet 5.5, prefer Sonnet 5.5 for delegated work. For easy, bounded tasks such as straightforward documentation or authorized commits, consider Haiku 5.5 when available and appropriate.
-- The user prefers Opus 5.5 medium for starting projects and initial consultation. Do not change the session's model without user authorization.
+## Communication & Response Formatting
+- Direct, concise, technically dense answers; no filler, pleasantries or preambles.
+- Avoid lengthy explanations unless explicitly requested.
+- Ask for confirmation before major structural changes, breaking API changes or heavy new dependencies.
+- Give short technical summaries of root causes and architectural decisions for major changes.
 
-## Documentation
-- For library, framework, SDK, API, CLI, and cloud-service questions, consult current documentation when the task depends on their behavior. Prefer Context7 when available, then use current official documentation if needed. Report material documentation limitations.
+## Live Documentation (Context7)
+- Use the `ctx7` CLI to fetch current docs when working with any library, framework, SDK, API, CLI tool or cloud service:
+  1. `npx ctx7@latest library <name> "<what to look up>"`
+  2. Pick the match ID (`/org/project`)
+  3. `npx ctx7@latest docs <libraryId> "<what to look up>"`
+- If `ctx7` is unavailable or finds nothing, tell the user and recommend `npx ctx7@latest login` or setting `CONTEXT7_API_KEY`; do not silently fall back to outdated training data.
 
-## Communication
-- Be direct and concise; expand when the user requests detail. Explain significant root causes and architectural decisions briefly.
-- Ask for confirmation before major structural changes, breaking public APIs, or adding heavy dependencies. Prepare a concrete proposal first when feasible.
+## Sub-Agent Orchestration (Context & Token Optimization)
+- **Default mode:** The main agent acts as an **orchestrator**. It plans, decomposes, delegates implementation work to sub-agents (Agent tool), reviews their results, and reports to the user. It keeps its own context lean: it must not read large files, run long searches, or write bulk code itself when a sub-agent can do it.
+- **Model ladder (highest to lowest):** Fable 5.1 > Opus 5.5 > Sonnet 5.5 > Haiku 5.5. Sub-agents must always run on a model **strictly lower** than the orchestrator's, never equal or higher (unless the opt-out or escalation rules below apply).
+- **The orchestrator decides model and effort per task.** For every delegated task it must pick the sub-agent model and the `effort` parameter based on the task's complexity, risk, and ambiguity. There is no fixed mapping; use judgment.
+- **Effort levels:** Only `low`, `medium`, or `high` may be used for sub-agents. **Never use `xhigh` or `max`.** Pass `effort` explicitly on every Agent call.
+- **Selection guidelines (orchestrator = Opus 5.5; adapt one tier down for other orchestrators):**
+  - **Sonnet 5.5, `effort: "high"`:** complex multi-file features or refactors, tricky debugging, non-trivial logic, anything needing careful reasoning.
+  - **Sonnet 5.5, `effort: "medium"`:** standard implementation, bug fixes, tests, code search/exploration, docs lookups.
+  - **Sonnet 5.5, `effort: "low"`:** small well-specified edits that still need some judgment.
+  - **Haiku 5.5 (lowest effort that fits):** trivial work such as single-file mechanical edits, renames, formatting, boilerplate, running commands and summarizing output, simple lookups.
+  - Architecturally critical, security-sensitive, or ambiguous decisions stay in the orchestrator; delegate only the mechanical implementation.
+- **Other orchestrators:** Fable 5.1 may delegate to Opus 5.5 or lower; Sonnet 5.5 delegates only to Haiku 5.5 (trivial tasks) and handles everything else directly; Haiku 5.5 works directly. The same effort limits apply (`high` at most).
+- **Sub-agent briefing:** Every sub-agent prompt must be self-contained: goal, exact files/area, constraints from this CLAUDE.md (branching, commit convention, i18n, tests), and a clear definition of done. Ask for a short report (changes made, files touched, test/lint/build results), not file dumps.
+- **Parallelism:** Launch independent sub-agents in parallel in a single message. Never run two writers on the same files concurrently.
+- **Verification:** The orchestrator must verify sub-agent results (diff review, tests, linter, build) before marking a task complete. If a lower-tier result is inadequate, retry once with a clearer brief, then escalate the task to the same tier as the orchestrator.
+- **Opt-out (explicit user request only):** If the user explicitly asks to work without sub-agents, the orchestrator must not delegate to any lower-tier model. In that case it may either work directly or spawn sub-agents of the **same model and quality level** as itself (e.g. Opus 5.5 → Opus 5.5). This preference applies only to the request where it was stated, unless the user says otherwise.
+- **Exceptions:** Skip delegation for pure conversation, single quick answers, and edits so small that briefing a sub-agent costs more than doing the work.
