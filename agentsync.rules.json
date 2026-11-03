@@ -4,7 +4,7 @@
     {
       "id": "r_062685f85a",
       "name": ".gitignore",
-      "enabled": true,
+      "enabled": false,
       "source": {
         "origin": "repo",
         "path": "AGENTS/Claude/CLAUDE-AGENTS.md"
