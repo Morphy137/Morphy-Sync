@@ -32,3 +32,6 @@ tmp/
 
 # AgentSync temporary files
 *.agentsync.tmp
+
+# AgentSync per-user rules (each person keeps their own)
+agentsync.rules.json
