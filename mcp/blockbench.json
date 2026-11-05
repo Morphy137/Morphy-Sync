@@ -1,0 +1,21 @@
+{
+  "mcpServers": {
+    "blockbench": {
+      "type": "http",
+      "url": "http://localhost:3000/bb-mcp",
+      "serverUrl": "http://localhost:3000/bb-mcp"
+    }
+  },
+  "mcp_servers": {
+    "blockbench": {
+      "url": "http://localhost:3000/bb-mcp"
+    }
+  },
+  "mcp": {
+    "blockbench": {
+      "type": "remote",
+      "url": "http://localhost:3000/bb-mcp",
+      "enabled": true
+    }
+  }
+}
