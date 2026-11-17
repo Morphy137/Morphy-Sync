@@ -1,20 +1,19 @@
 # Codex-Specific Instructions
 
-These instructions supplement the common global instructions. Apply them only when the session is running in Codex.
+Supplement to `AGENTS.md`. Apply strictly when running in Codex.
 
-## Delegation Strategy
+## Model Hierarchy & Roles
+Always use the latest available version following: **Astra > Sol > Terra > Luna**.
 
-- Handle small, straightforward, or tightly coupled tasks directly.
-- For substantial features or large fixes, delegate well-defined independent work when supported and useful.
-- Use at most two sub-agents concurrently by default.
-- Avoid nested delegation unless necessary or explicitly requested.
-- Respect requests to work without sub-agents.
+- **Astra:** High-level orchestration, consultation, or critical architectural decisions only.
+  - *Effort:* Strictly `low` or `medium` (`high`, `xhigh`, and `max` forbidden).
+- **Sol:** Main session default and complex implementation, architecture refactors, or difficult debugging.
+  - *Effort:* `medium` by default; `high` for complex tasks (`xhigh`/`max` forbidden).
+- **Terra:** Default sub-agent for standard code implementation, features, bug fixes, and tests.
+  - *Effort:* `high` by default; adjust to `low`, `medium`, `xhigh`, or `max` depending on task complexity.
+- **Luna:** Concrete minor edits, documentation, boilerplate, and executing Git merge/cleanup tasks triggered by the orchestrator.
+  - *Effort:* Unrestricted (`low`, `medium`, `high`, `xhigh`, or `max` as needed).
 
-## Model Preferences
-
-- Prefer GPT-6.1 Sol medium for starting projects and acting as the main agent. Do not change the session model without authorization.
-- For delegated code changes, prefer GPT-6.1 Terra.
-- Use high reasoning for complex work and medium or low for simpler, bounded work when supported.
-- Handle trivial work directly when delegation adds overhead.
-- Do not select Astra as an automatic escalation.
-- If Terra is unavailable or a different model is needed, explain the limitation and ask before choosing a more costly alternative.
+## Escalation on Failure
+- If a sub-agent fails verification, retry **once** with a clearer brief or higher allowed effort.
+- If it fails a second time, escalate one tier up (`Luna -> Terra -> Sol`). Do not automatically escalate to **Astra** without user authorization.
