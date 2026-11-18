@@ -1,7 +1,7 @@
 # Global Agent Instructions
 
 ## Tool-Specific Reference
-Identify the active client harness (not from the model name alone) and read **only** its reference file relative to this directory before planning or executing work:
+Identify the active client harness (not from the model name alone) and read **only** its reference file relative to this directory before planning or executing work. Read it at session start, before the first plan; its rules override the generic ones below where they conflict:
 - Codex: `references/codex.md`
 - Claude Code: `references/claude.md`
 - Gemini CLI / Antigravity: `references/gemini.md`
@@ -10,7 +10,7 @@ Identify the active client harness (not from the model name alone) and read **on
 - **Lean Main Session:** Use the main session strictly to analyze requests, confirm scope, and orchestrate. Delegate features, fixes, and testing to sub-sessions/sub-agents. Reuse existing sub-sessions when iterating on the same task. Require short summary reports back, never file dumps.
 - **Context Compaction:** Automatically compact context at **90% capacity**, strictly between tasks (after finishing a task or before starting a new one, never mid-implementation).
 - **Mandatory Sub-Agent Briefing:** Always pass project context to sub-agents and explicitly instruct them to read `AGENTS.md` and obey core constraints (strictly **no `Co-authored-by`**, English commits, targeted tests only).
-- **Worktree Isolation:** Isolate parallel write tasks in separate worktrees at `~/.worktrees/<project_name>/<worktree_name>` (one per task branch). Never create worktrees for read-only tasks.
+- **Worktree Isolation:** Isolate parallel write tasks in separate worktrees at `~/.worktrees/<project_name>/<worktree_name>` (one per task branch), unless the tool reference defines its own worktree mechanism. Never create worktrees for read-only tasks.
 
 ## Configuration — AgentSync
 Always load and follow the `agentsync` skill when installing, updating, or syncing skills, MCP servers, or agent configs instead of editing client files manually.
@@ -18,7 +18,7 @@ Always load and follow the `agentsync` skill when installing, updating, or synci
 ## Git & Version Control
 - **Branches:** Keep only `main` (releases) and `development` (integration) as permanent branches. Branch every task from `development` using `feature/`, `fix/`, `refactor/`, or `chore/` prefixes.
 - **Commits & Authorship:** Make incremental commits per logical change using **Conventional Commits in English**. Never add AI/tool attribution or `Co-authored-by` trailers anywhere.
-- **Delegated Auto-Merge & Cleanup:** Once task implementations are verified, the orchestrator must invoke a sub-agent to **merge the task branch into `development`, run `git push origin development`, and delete the local task branch and temporary `git worktree`** (unless instructed otherwise).
+- **Delegated Auto-Merge & Cleanup:** Once task implementations are verified, the orchestrator must invoke a sub-agent to **merge the task branch into `development`, run `git push origin development`, and delete the local task branch and temporary `git worktree`** (unless instructed otherwise) or the mechanism defined in the tool reference.
 - **Restrictions:** Never commit, merge, or push to `main`, and never force-push without explicit user authorization. Never commit secrets, `.env` files, or private keys.
 
 ## Code, Architecture & i18n
